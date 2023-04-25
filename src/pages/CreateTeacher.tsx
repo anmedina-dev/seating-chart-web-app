@@ -1,27 +1,48 @@
 import fetcher from "@/lib/fetch";
-import { UserButton } from "@clerk/nextjs";
-import { getAuth, buildClerkProps } from "@clerk/nextjs/server";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import styles from "../styles/CreateTeacher.module.css";
 import useSWR from "swr";
-import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
+import axios from "axios";
 
-export default function CreateTeacher({ userId }: any) {
-  const { data } = useSWR<any>(`/api/schools`, fetcher);
+export default function CreateTeacher() {
+  const { isLoaded, isSignedIn, user } = useUser();
+  const userId = user ? user.id : "";
+  const { data, error, isLoading } = useSWR(`/api/clerk?id=` + userId, fetcher);
+  const router = useRouter();
 
+  /*
   let schools: (string | undefined)[] = [];
-
   if (data) schools = data.map((school: { name: any }) => school.name);
   schools.push("Other");
+*/
+
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
+  const [schools, setSchools] = useState<[string]>([""]);
   const [schoolDropdown, setSchoolDropdown] = useState<string>();
   const [isOther, setIsOther] = useState<boolean>(false);
-  const [schoolType, setSchoolType] = useState<string>();
+  const [schoolType, setSchoolType] = useState<string>("");
 
   const [firstNameError, setFirstNameError] = useState<boolean>(false);
   const [lastNameError, setLastNameError] = useState<boolean>(false);
   const [schoolTypeError, setSchoolTypeError] = useState<boolean>(false);
+
+  useEffect(() => {
+    axios
+      .get("/api/schools")
+      .then(function (response) {
+        const tempSchools = response.data.map(
+          (school: { name: any }) => school.name
+        );
+        tempSchools.push("Other");
+        setSchools(tempSchools);
+      })
+      .catch(function (error) {
+        // console.log(error);
+      });
+  }, []);
 
   useEffect(() => {
     if (schoolDropdown === "Other") setIsOther(true);
@@ -29,12 +50,14 @@ export default function CreateTeacher({ userId }: any) {
   }, [schoolDropdown]);
 
   useEffect(() => {
+    if (!isLoaded || !user || isLoading) return;
     setFirstNameError(false);
     setLastNameError(false);
     setSchoolTypeError(false);
   }, [firstName, lastName, schoolType]);
 
   const handleSubmit = async () => {
+    if (!isLoaded || !user || isLoading) return;
     const errors = handleErrors();
     if (errors) return;
 
@@ -48,9 +71,12 @@ export default function CreateTeacher({ userId }: any) {
         firstName: firstName,
         lastName: lastName,
         school: isOther ? schoolType : schoolDropdown,
-        clerk_id: userId,
+        clerk_id: user.id,
       }),
-    }).then((res) => res.json());
+    }).then((res) => {
+      res.json();
+      router.push("/Classroom");
+    });
   };
 
   const handleErrors = () => {
@@ -74,12 +100,14 @@ export default function CreateTeacher({ userId }: any) {
     return areThereErrrors;
   };
 
-  if (!data) return <div>...Loading</div>;
+  if (!isLoaded || !user || isLoading) return <div>...Loading</div>;
+  if (data) router.push("/Classroom");
+  if (isLoaded && !isSignedIn) router.push("/");
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <header className={styles.header}>
         <h1>Seating Chart Web App</h1>
-        <UserButton showName={true} />
+        <UserButton showName={true} afterSignOutUrl="/" />
       </header>
 
       <h1 className="mb-10">
@@ -100,6 +128,7 @@ export default function CreateTeacher({ userId }: any) {
               id="grid-first-name"
               type="text"
               placeholder="Jane"
+              value={firstName}
               onChange={(event) => setFirstName(event.target.value)}
             />
             {firstNameError ? (
@@ -122,6 +151,7 @@ export default function CreateTeacher({ userId }: any) {
               id="grid-last-name"
               type="text"
               placeholder="Doe"
+              value={lastName}
               onChange={(event) => setLastName(event.target.value)}
             />
             {lastNameError ? (
@@ -177,6 +207,7 @@ export default function CreateTeacher({ userId }: any) {
                 id="grid-school"
                 type="text"
                 placeholder="School"
+                value={schoolType}
                 onChange={(event) => setSchoolType(event.target.value)}
               />
               {schoolTypeError ? (
@@ -195,7 +226,7 @@ export default function CreateTeacher({ userId }: any) {
           <button
             className="w-full mt-3 shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
             type="button"
-            onClick={handleSubmit}
+            onClick={() => handleSubmit()}
           >
             Sign Up
           </button>
@@ -204,42 +235,3 @@ export default function CreateTeacher({ userId }: any) {
     </main>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { userId } = getAuth(ctx.req);
-  const { URL } = process.env;
-
-  if (!userId) {
-    // handle user is not logged in.
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/",
-      },
-      props: {},
-    };
-  }
-
-  const res = await fetch(`${URL}/api/clerk?id=` + userId, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-  });
-
-  const user = await res.json();
-  if (user) {
-    // Attach extra info to the error object.
-
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/",
-      },
-      props: {},
-    };
-  }
-
-  return { props: { ...buildClerkProps(ctx.req), userId } };
-};
