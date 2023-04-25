@@ -11,8 +11,6 @@ export default async function handle(
   const { query, method } = req;
   const clerk_id = query.id as string;
 
-  console.log(clerk_id);
-
   if (method === "GET") {
     const clerk_teacher = await prisma.clerk_teacher.findUnique({
       where: {
@@ -23,13 +21,11 @@ export default async function handle(
     if (!clerk_teacher)
       return res.status(400).json({ error: "Teacher not found" });
 
-    console.log(clerk_teacher);
     const teacher = await prisma.teachers.findUnique({
       where: {
         id: clerk_teacher["teacher_id"],
       },
     });
-    console.log(teacher);
     return res.status(200).json({ teacher });
   } else if (req.method === "POST") {
     return await createTeacher(req, res);
