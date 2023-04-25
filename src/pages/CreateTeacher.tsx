@@ -12,12 +12,6 @@ export default function CreateTeacher() {
   const { data, error, isLoading } = useSWR(`/api/clerk?id=` + userId, fetcher);
   const router = useRouter();
 
-  /*
-  let schools: (string | undefined)[] = [];
-  if (data) schools = data.map((school: { name: any }) => school.name);
-  schools.push("Other");
-*/
-
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [schools, setSchools] = useState<[string]>([""]);
@@ -39,9 +33,7 @@ export default function CreateTeacher() {
         tempSchools.push("Other");
         setSchools(tempSchools);
       })
-      .catch(function (error) {
-        // console.log(error);
-      });
+      .catch(function (error) {});
   }, []);
 
   useEffect(() => {
