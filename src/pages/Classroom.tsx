@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import fetcher from "@/lib/fetch";
 import { useEffect } from "react";
+import Board from "@/components/Board";
 
 export default function Classroom() {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -22,7 +23,7 @@ export default function Classroom() {
 
         <UserButton showName={true} afterSignOutUrl="/" />
       </header>
-      classroom
+      <Board />
     </main>
   );
 }

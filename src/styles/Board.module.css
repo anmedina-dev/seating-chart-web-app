@@ -1,0 +1,27 @@
+.board {
+    display: flex;
+    justify-content: center;
+    min-height: 600px;
+    width: 80%;
+    border: solid;
+    border-radius: 5%;
+}
+
+.board>* {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.button_column{
+    width: 10%;
+    padding: 25px;
+}
+
+.class_section{
+    width: 90%;
+}
+
+.button_column>*{
+    margin-bottom: 10px;
+}
