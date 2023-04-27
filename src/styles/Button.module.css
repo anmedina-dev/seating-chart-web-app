@@ -6,8 +6,17 @@
     transition: all ease-in-out 0.2s;
     font-size: 16px;
    }
-   
-   .button span {
+
+   .button_selected {
+    border: 2px solid #463c3a;
+    background-color: #463c3a;
+    border-radius: 0.9em;
+    padding: 0.8em 1.2em 0.8em 1em;
+    transition: all ease-in-out 0.2s;
+    font-size: 16px;
+   }  
+
+   .button span, .button_selected span{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,9 +25,10 @@
     font-weight: 600;
    }
    
-   .button:hover {
-    background-color: #0071e2;
+   .button:hover, .button_selected:hover {
+    background-color: #6F5E76;
    }
+
 
    .svg {
     height: 35px;

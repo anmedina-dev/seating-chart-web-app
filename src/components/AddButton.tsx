@@ -1,9 +1,11 @@
 import React from "react";
 import styles from "../styles/Button.module.css";
 
-export default function AddButton() {
+export default function AddButton({ period, selected, handleClick }: any) {
+  const hoverClass =
+    period === selected ? styles.button_selected : styles.button;
   return (
-    <button className={styles.button}>
+    <button className={hoverClass} onClick={handleClick}>
       <span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
