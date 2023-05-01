@@ -16,6 +16,13 @@
     font-size: 16px;
    }  
 
+   .button, .button_selected{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+   }
+
    .button span, .button_selected span{
     display: flex;
     justify-content: center;
@@ -23,6 +30,7 @@
     color: #fff;
     font-size: 25px;
     font-weight: 600;
+    padding: auto;
    }
    
    .button:hover, .button_selected:hover {
@@ -34,4 +42,5 @@
     height: 35px;
     width: 35px;
     font-weight: 600;
+    color: white;
    }

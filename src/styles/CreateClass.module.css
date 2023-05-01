@@ -1,0 +1,13 @@
+.create_class {
+    padding-top: 20px;
+    padding-right: 30px;
+}
+
+.button_row {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.button_row>*{
+    margin-left: 20px;
+}

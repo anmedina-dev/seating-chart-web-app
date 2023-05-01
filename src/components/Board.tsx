@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styles from "../styles/Board.module.css";
 import AddButton from "./AddButton";
 import ClassButton from "./ClassButton";
+import ShowClass from "./ShowClass";
+import CreateClass from "./CreateClass";
 
 export default function Board() {
   const [buttonSelected, setButtonSelected] = useState<any>("add");
@@ -22,7 +24,13 @@ export default function Board() {
           handleClick={() => handleClick(1)}
         />
       </div>
-      <div className={styles.class_section}>class</div>
+      <div className={styles.class_section}>
+        {buttonSelected === "add" ? (
+          <CreateClass />
+        ) : (
+          <ShowClass period={buttonSelected} />
+        )}
+      </div>
     </div>
   );
 }

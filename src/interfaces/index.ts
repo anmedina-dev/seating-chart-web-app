@@ -15,7 +15,9 @@ export type ClassRoomTable = {
 };
 
 export type ClassRoom = {
-  tables: ClassRoomTable[];
+  id: number;
+  room_number: number;
+  school_id: number;
 };
 
 export type Teacher = {
