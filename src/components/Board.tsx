@@ -43,8 +43,9 @@ export default function Board() {
           selected={buttonSelected}
           handleClick={() => handleClick("add")}
         />
-        {classes?.map((item) => (
+        {classes?.map((item, index) => (
           <ClassButton
+            key={index}
             period={item.period}
             selected={buttonSelected}
             handleClick={() => handleClick(item.period)}
