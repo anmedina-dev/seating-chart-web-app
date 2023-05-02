@@ -11,15 +11,17 @@ export default function AddClass() {
   const userId = user ? user.id : "";
   const { data, error, isLoading } = useSWR(`/api/clerk?id=` + userId, fetcher);
   const [period, setPeriod] = useState<any>("");
-  const [periodError, setPeriodError] = useState<Boolean>(false);
+  const [periodError, setPeriodError] = useState<boolean>(false);
   const [classrooms, setClassrooms] = useState<ClassRoom[]>();
   const [classroomChoice, setClassroomChoice] = useState<any>();
   const [subjectChoice, setSubjectChoice] = useState<any>("");
   const [subjectText, setSubjectText] = useState<string>("");
-  const [subjectTextError, setSubjectTextError] = useState<Boolean>(false);
+  const [subjectTextError, setSubjectTextError] = useState<boolean>(false);
   const [subjectTextErrorText, setSubjectTextErrorText] = useState<string>("");
   const [classroomDropdown, setClassroomDropdown] = useState<any[]>();
   const [subjectDropdown, setSubjectDropdown] = useState<string[]>();
+  const [isAlertVisible, setIsAlertVisible] = useState<boolean>(false);
+  const [createClassError, setCreateClassError] = useState<string>("");
 
   useEffect(() => {
     if (!data) return;
@@ -51,17 +53,58 @@ export default function AddClass() {
     if (!isLoaded || !user || isLoading) return;
     setPeriodError(false);
     setSubjectTextError(false);
+    setCreateClassError("");
   }, [subjectText, period, classroomChoice]);
 
   useEffect(() => {
     if (!classrooms) return;
-    setClassroomDropdown(classrooms.map((data) => data.room_number));
+    const classroomDropdownTemp = classrooms.map((data) => data.room_number);
+    setClassroomDropdown(
+      classroomDropdownTemp.sort(function (a, b) {
+        return a - b;
+      })
+    );
   }, [classrooms]);
 
+  useEffect(() => {
+    if (!classroomDropdown) return;
+    setClassroomChoice(classroomDropdown[0]);
+  }, [classroomDropdown]);
+
+  useEffect(() => {
+    if (!subjectDropdown) return;
+    setSubjectChoice(subjectDropdown[0]);
+  }, [subjectDropdown]);
+
   const handleSubmit = async () => {
-    if (!isLoaded || !user || isLoading) return;
+    if (!isLoaded || !user || isLoading || !classrooms) return;
     const errors = handleErrors();
     if (errors) return;
+
+    const subjectBody = subjectChoice === "Other" ? subjectText : subjectChoice;
+
+    const classroomId = classrooms.find(
+      (item) => item.room_number === +classroomChoice
+    );
+    console.log(classroomId);
+
+    try {
+      const response = await axios.post("/api/class", {
+        period: period,
+        subject: subjectBody,
+        classroom_id: classroomId?.id,
+        teacher_id: data.teacher.id,
+      });
+
+      const responseData = await response.data;
+
+      setIsAlertVisible(true);
+      setTimeout(() => {
+        setIsAlertVisible(false);
+      }, 3000);
+    } catch (error) {
+      setCreateClassError("Couldn't Create Class");
+    }
   };
   const handleErrors = () => {
     let areThereErrrors = false;
@@ -219,6 +262,20 @@ export default function AddClass() {
             Add Class
           </button>
         </div>
+        {isAlertVisible ? (
+          <div className="md:flex md:items-center">
+            <div className="w-full mt-3 shadow bg-green-500 hover:bg-green-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded">
+              Class added successfully
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
+        {createClassError.length > 0 ? (
+          <p className="text-red-500 text-xs italic">{createClassError}</p>
+        ) : (
+          <></>
+        )}
       </form>
     </div>
   );

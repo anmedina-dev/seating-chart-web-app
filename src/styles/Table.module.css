@@ -1,0 +1,23 @@
+.table {
+    display: flex;
+    width: 100%;
+}
+
+.table_info {
+    display: flex;
+}
+
+.table_info>* {
+    margin: 0px 10px ;
+}
+
+.icon:hover{
+    cursor: pointer;
+}
+
+.seat_section {
+    display: flex;
+}
+.seat_section>* {
+    margin: 0px 5px;
+}

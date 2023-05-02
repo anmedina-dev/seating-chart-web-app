@@ -28,6 +28,15 @@ export default async function handle(
 async function createClassroom(req: NextApiRequest, res: NextApiResponse<any>) {
   const body = req.body;
 
+  const doesRoomExist = await prisma.classroom.findMany({
+    where: {
+      room_number: body.room_number,
+      school_id: body.school_id,
+    },
+  });
+
+  if (doesRoomExist.length > 0)
+    return res.status(400).json({ error: "Room Exists" });
   try {
     const newClassroom = await prisma.classroom.create({
       data: {

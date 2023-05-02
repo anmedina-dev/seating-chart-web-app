@@ -5,13 +5,17 @@ export type Student = {
 };
 
 export type Class = {
-  numberOfStudents: number;
-  students: Student[];
+  id: number;
+  period: string;
+  subject_id: number;
+  classroom_id: number;
+  teacher_id: number;
 };
 
-export type ClassRoomTable = {
-  numberOfChairs: number;
-  students: Student[];
+export type ClassroomTable = {
+  id: number;
+  seats: number;
+  classroom_id: number;
 };
 
 export type ClassRoom = {

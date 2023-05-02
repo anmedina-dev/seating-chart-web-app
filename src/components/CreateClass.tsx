@@ -16,7 +16,7 @@ export default function CreateClass() {
         <CreateOrAddButton
           text="Add Classroom"
           handleClick={() => setisAddClass(false)}
-        />{" "}
+        />
       </div>
       {isAddClass ? <AddClass /> : <CreateClassroom />}
     </div>

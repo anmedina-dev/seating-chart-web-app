@@ -1,0 +1,31 @@
+.create_classroom {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.input_row{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.input_row>*{ margin: 5px;}
+
+.input_error {
+    color: red;
+}
+
+.tables_creation {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.tables {
+    width: 100%;
+    padding: 30px;
+}
