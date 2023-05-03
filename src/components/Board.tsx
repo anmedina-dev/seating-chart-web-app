@@ -4,35 +4,21 @@ import AddButton from "./AddButton";
 import ClassButton from "./ClassButton";
 import ShowClass from "./ShowClass";
 import CreateClass from "./CreateClass";
-import useSWR from "swr";
-import { useUser } from "@clerk/nextjs";
-import fetcher from "@/lib/fetch";
-import { Class } from "@/interfaces";
-import axios from "axios";
+import useUserHook from "@/hooks/user-hook";
+import useClassHook from "@/hooks/class-hooks";
 
 export default function Board() {
-  const { isLoaded, isSignedIn, user } = useUser();
-  const userId = user ? user.id : "";
-  const { data, error, isLoading } = useSWR(`/api/clerk?id=` + userId, fetcher);
-  const [classes, setClasses] = useState<Class[]>();
+  const { data } = useUserHook();
+  const { classes, getClasses } = useClassHook();
   const [buttonSelected, setButtonSelected] = useState<any>("add");
 
   useEffect(() => {
     if (!data) return;
     getClasses();
-  }, [data]);
+  }, []);
 
   const handleClick = (period: any) => {
     setButtonSelected(period);
-  };
-
-  const getClasses = async () => {
-    const response = await axios.get("/api/class", {
-      params: { teacher_id: data.teacher.id },
-    });
-    const responseData = await response.data;
-    console.log(responseData);
-    setClasses(responseData);
   };
 
   return (

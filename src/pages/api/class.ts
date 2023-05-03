@@ -19,7 +19,9 @@ export default async function handle(
     res.setHeader("Cache-Control", "s-maxage=86400");
     return res.status(200).json(classes);
   } else if (req.method === "POST") {
-    return createClass(req, res);
+    if (req.body.function === "add") return createClass(req, res);
+    if (req.body.function === "delete") return deleteClass(req, res);
+    return res.status(400).json({ error: "Not a valid function" });
   }
 }
 
@@ -57,6 +59,22 @@ async function createClass(req: NextApiRequest, res: NextApiResponse<any>) {
       },
     });
     return res.status(200).json(newClass);
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+}
+
+async function deleteClass(req: NextApiRequest, res: NextApiResponse<any>) {
+  const body = req.body;
+
+  try {
+    const deletedClass = await prisma.classes.deleteMany({
+      where: {
+        period: body.period,
+        teacher_id: body.teacher_id,
+      },
+    });
+    return res.status(200).json(deletedClass);
   } catch (error) {
     return res.status(400).json(error);
   }

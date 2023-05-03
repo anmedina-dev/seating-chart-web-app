@@ -9,6 +9,7 @@ export default function Table({
   deleteTable,
   deleteTableSeats,
   addTableSeats,
+  classroom,
 }: any) {
   return (
     <div className={styles.table}>
@@ -23,13 +24,17 @@ export default function Table({
           <RemoveCircleIcon
             className={styles.icon}
             id={table.id}
-            onClick={(event) => deleteTableSeats(event.currentTarget.id)}
+            onClick={(event) =>
+              deleteTableSeats(event.currentTarget.id, classroom)
+            }
           />
           <h3>{table.seats}</h3>
           <AddCircleIcon
             className={styles.icon}
             id={table.id}
-            onClick={(event) => addTableSeats(event.currentTarget.id)}
+            onClick={(event) =>
+              addTableSeats(event.currentTarget.id, classroom)
+            }
           />
         </div>
       </div>

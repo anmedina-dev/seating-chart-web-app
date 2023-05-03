@@ -1,15 +1,13 @@
-import fetcher from "@/lib/fetch";
-import { useUser } from "@clerk/nextjs";
-import useSWR from "swr";
 import React, { useEffect, useState } from "react";
 import { ClassRoom } from "@/interfaces";
 import axios from "axios";
 import styles from "../styles/AddClass.module.css";
+import useUserHook from "@/hooks/user-hook";
+import useClassHook from "@/hooks/class-hooks";
 
 export default function AddClass() {
-  const { isLoaded, isSignedIn, user } = useUser();
-  const userId = user ? user.id : "";
-  const { data, error, isLoading } = useSWR(`/api/clerk?id=` + userId, fetcher);
+  const { data, isLoaded, user, isLoading } = useUserHook();
+  const { addClasses } = useClassHook();
   const [period, setPeriod] = useState<any>("");
   const [periodError, setPeriodError] = useState<boolean>(false);
   const [classrooms, setClassrooms] = useState<ClassRoom[]>();
@@ -35,17 +33,16 @@ export default function AddClass() {
       params: { school_id: school_id },
     });
     const data = await classroomResponse.data;
-    console.log(data);
     setClassrooms(data);
   };
 
   const getSubjects = async () => {
     const subjectResponse = await axios.get("/api/subject");
     const data = await subjectResponse.data;
-    console.log(data);
+    data;
     const subjects = data.map((subject: { name: string }) => subject.name);
     subjects.push("Other");
-    console.log(subjects);
+    subjects;
     setSubjectDropdown(subjects);
   };
 
@@ -86,18 +83,13 @@ export default function AddClass() {
     const classroomId = classrooms.find(
       (item) => item.room_number === +classroomChoice
     );
-    console.log(classroomId);
+    if (!classroomId) {
+      setCreateClassError("Can't use that classroom");
+      return;
+    }
 
     try {
-      const response = await axios.post("/api/class", {
-        period: period,
-        subject: subjectBody,
-        classroom_id: classroomId?.id,
-        teacher_id: data.teacher.id,
-      });
-
-      const responseData = await response.data;
-
+      addClasses(period, subjectBody, classroomId.id);
       setIsAlertVisible(true);
       setTimeout(() => {
         setIsAlertVisible(false);
@@ -106,6 +98,7 @@ export default function AddClass() {
       setCreateClassError("Couldn't Create Class");
     }
   };
+
   const handleErrors = () => {
     let areThereErrrors = false;
 
@@ -115,7 +108,7 @@ export default function AddClass() {
     }
 
     if (subjectChoice === "Other") {
-      console.log(subjectText);
+      subjectText;
       if (subjectText.length < 1) {
         setSubjectTextError(true);
         setSubjectTextErrorText("Fill in this field");

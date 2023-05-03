@@ -1,23 +1,26 @@
-import fetcher from "@/lib/fetch";
-import { useUser } from "@clerk/nextjs";
-import useSWR from "swr";
 import React, { useEffect, useState } from "react";
 import styles from "../styles/CreateClassroom.module.css";
 import Button from "@mui/material/Button";
-import { amber } from "@mui/material/colors";
-import { ClassRoom, ClassroomTable } from "@/interfaces";
+import { ClassRoom } from "@/interfaces";
 import axios from "axios";
 import Table from "./Table";
+import useUserHook from "@/hooks/user-hook";
+import useTablesHook from "@/hooks/tables-hooks";
 
 export default function CreateClassroom({ startingClassroom }: any) {
-  const { isLoaded, isSignedIn, user } = useUser();
-  const userId = user ? user.id : "";
-  const { data, error, isLoading } = useSWR(`/api/clerk?id=` + userId, fetcher);
+  const { data } = useUserHook();
 
   const [classroomNumberError, setClassroomNumberError] = useState<string>("");
   const [classroomNumber, setClassroomNumber] = useState<any>("");
   const [classroom, setClassroom] = useState<ClassRoom>(startingClassroom);
-  const [tables, setTables] = useState<ClassroomTable[]>();
+  const {
+    tables,
+    getTables,
+    addTable,
+    deleteTable,
+    addTableSeats,
+    deleteTableSeats,
+  } = useTablesHook();
 
   useEffect(() => {
     setClassroomNumberError("");
@@ -25,80 +28,8 @@ export default function CreateClassroom({ startingClassroom }: any) {
 
   useEffect(() => {
     if (!classroom) return;
-    getTables();
+    getTables(classroom);
   }, [classroom]);
-
-  const getTables = async () => {
-    if (!classroom) return;
-    const response = await axios.get("/api/tables", {
-      params: { classroom_id: classroom.id },
-    });
-
-    const responseData = await response.data;
-
-    setTables(responseData);
-
-    console.log(responseData);
-  };
-
-  const addTable = async () => {
-    if (!classroom) return;
-    const response = await axios.post("/api/tables", {
-      seats: 1,
-      classroom_id: classroom.id,
-      function: "add",
-    });
-
-    const responseData = await response.data;
-
-    getTables();
-  };
-
-  const deleteTable = async (room_id: number) => {
-    if (!classroom) return;
-    console.log(room_id);
-    const response = await axios.post("/api/tables", {
-      id: room_id,
-      function: "delete",
-    });
-
-    const responseData = await response.data;
-
-    getTables();
-  };
-
-  const addTableSeats = async (room_id: number) => {
-    if (!classroom) return;
-    const response = await axios.post("/api/tables", {
-      id: room_id,
-      function: "update",
-      seat_function: "add",
-    });
-
-    const responseData = await response.data;
-
-    getTables();
-  };
-
-  const deleteTableSeats = async (room_id: number) => {
-    if (!classroom) return;
-    if (!tables) return;
-
-    const tempTable = tables.find((item) => item.id === +room_id);
-    if (tempTable && tempTable.seats === 1) {
-      deleteTable(tempTable.id);
-      return;
-    }
-    const response = await axios.post("/api/tables", {
-      id: room_id,
-      function: "update",
-      seat_function: "delete",
-    });
-
-    const responseData = await response.data;
-
-    getTables();
-  };
 
   const handleCreateClassroom = async () => {
     if (!data) return;
@@ -128,7 +59,6 @@ export default function CreateClassroom({ startingClassroom }: any) {
     }
   };
 
-  if (data) console.log(data);
   return (
     <div className={styles.create_classroom}>
       <div className={styles.input_row}>
@@ -155,13 +85,14 @@ export default function CreateClassroom({ startingClassroom }: any) {
         <>
           <div className={styles.tables_creation}>
             <h5>{classroom.room_number}</h5>
-            <Button variant="contained" onClick={() => addTable()}>
+            <Button variant="contained" onClick={() => addTable(classroom)}>
               Add Table
             </Button>
           </div>
           <div className={styles.tables}>
             {tables?.map((table, index) => (
               <Table
+                classroom={classroom}
                 table={table}
                 key={index}
                 deleteTable={deleteTable}

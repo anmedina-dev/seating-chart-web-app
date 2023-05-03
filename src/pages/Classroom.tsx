@@ -13,7 +13,7 @@ export default function Classroom() {
   const { data, error, isLoading } = useSWR(`/api/clerk?id=` + userId, fetcher);
   const router = useRouter();
 
-  console.log(data);
+  data;
 
   if (!isLoaded || !user || isLoading) return <div>...Loading</div>;
   if (error) router.push("/CreateTeacher");

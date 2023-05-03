@@ -67,7 +67,7 @@ async function updateTable(req: NextApiRequest, res: NextApiResponse<any>) {
   const table_id_string = body.id;
   const table_id = +table_id_string;
 
-  console.log(body.id);
+  body.id;
   try {
     if (body.seat_function === "add") {
       const oldTable = await prisma.tables.update({
