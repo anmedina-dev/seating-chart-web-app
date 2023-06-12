@@ -6,19 +6,36 @@ import ShowClass from "./ShowClass";
 import CreateClass from "./CreateClass";
 import useUserHook from "@/hooks/user-hook";
 import useClassHook from "@/hooks/class-hooks";
+import useBoardHook from "@/hooks/board-hooks";
 
 export default function Board() {
   const { data } = useUserHook();
-  const { classes, getClasses } = useClassHook();
-  const [buttonSelected, setButtonSelected] = useState<any>("add");
+  const { classes, getClasses, deleteClasses } = useClassHook();
+  const [classSelected, setClassSelected] = useState<any>("add");
+  // const { classSelected, setClassSelected } = useBoardHook();
 
   useEffect(() => {
     if (!data) return;
     getClasses();
   }, []);
 
+  useEffect(() => {
+    if (!data) return;
+    getClasses();
+  }, [classSelected]);
+
   const handleClick = (period: any) => {
-    setButtonSelected(period);
+    console.log(period);
+    setClassSelected(period);
+  };
+
+  const handleDelete = () => {
+    deleteClasses(classSelected);
+    setClassSelected("add");
+  };
+
+  const handleAdd = (period: any) => {
+    setClassSelected(period);
   };
 
   return (
@@ -26,23 +43,26 @@ export default function Board() {
       <div className={styles.button_column}>
         <AddButton
           period={"add"}
-          selected={buttonSelected}
+          selected={classSelected}
           handleClick={() => handleClick("add")}
         />
         {classes?.map((item, index) => (
           <ClassButton
             key={index}
             period={item.period}
-            selected={buttonSelected}
+            selected={classSelected}
             handleClick={() => handleClick(item.period)}
           />
         ))}
       </div>
       <div className={styles.class_section}>
-        {buttonSelected === "add" ? (
-          <CreateClass />
+        {classSelected === "add" ? (
+          <CreateClass handleAdd={handleAdd} />
         ) : (
-          <ShowClass period={buttonSelected} />
+          <ShowClass
+            classSelected={classSelected}
+            handleDelete={handleDelete}
+          />
         )}
       </div>
     </div>

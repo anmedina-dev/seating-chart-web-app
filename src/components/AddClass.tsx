@@ -5,8 +5,9 @@ import styles from "../styles/AddClass.module.css";
 import useUserHook from "@/hooks/user-hook";
 import useClassHook from "@/hooks/class-hooks";
 
-export default function AddClass() {
+export default function AddClass({ handleAdd }: any) {
   const { data, isLoaded, user, isLoading } = useUserHook();
+  const { getClasses } = useClassHook();
   const { addClasses } = useClassHook();
   const [period, setPeriod] = useState<any>("");
   const [periodError, setPeriodError] = useState<boolean>(false);
@@ -89,11 +90,9 @@ export default function AddClass() {
     }
 
     try {
-      addClasses(period, subjectBody, classroomId.id);
-      setIsAlertVisible(true);
-      setTimeout(() => {
-        setIsAlertVisible(false);
-      }, 3000);
+      await addClasses(period, subjectBody, classroomId.id);
+      await getClasses();
+      await handleAdd(period);
     } catch (error) {
       setCreateClassError("Couldn't Create Class");
     }

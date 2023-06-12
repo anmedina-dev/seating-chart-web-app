@@ -1,7 +1,7 @@
 import { Class } from "@/interfaces";
 import axios from "axios";
 import useUserHook from "./user-hook";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const useClassHook = () => {
   const { data } = useUserHook();

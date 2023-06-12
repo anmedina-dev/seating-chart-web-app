@@ -4,7 +4,7 @@ import AddClass from "./AddClass";
 import CreateClassroom from "./CreateClassroom";
 import CreateOrAddButton from "./CreateOrAddButton";
 
-export default function CreateClass() {
+export default function CreateClass({ handleAdd }: any) {
   const [isAddClass, setisAddClass] = useState<Boolean>(true);
   return (
     <div className={styles.create_class}>
@@ -18,7 +18,7 @@ export default function CreateClass() {
           handleClick={() => setisAddClass(false)}
         />
       </div>
-      {isAddClass ? <AddClass /> : <CreateClassroom />}
+      {isAddClass ? <AddClass handleAdd={handleAdd} /> : <CreateClassroom />}
     </div>
   );
 }
