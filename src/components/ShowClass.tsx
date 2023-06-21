@@ -172,8 +172,8 @@ export default function ShowClass({ handleDelete, chosenClass }: ShowClass) {
           </span>
           <div className={styles.students}>
             {students?.map((student, index) => (
-              <div className={styles.student}>
-                <span key={index}>
+              <div key={index} className={styles.student}>
+                <span>
                   {index + 1}. {student.firstName} {student.lastName}
                 </span>
 
