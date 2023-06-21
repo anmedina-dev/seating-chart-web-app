@@ -1,7 +1,8 @@
 export type Student = {
   id: number;
-  name: string;
-  school: string;
+  firstName: string;
+  lastName: string;
+  school_id?: number | null;
 };
 
 export type Class = {
@@ -27,4 +28,9 @@ export type ClassRoom = {
 export type Teacher = {
   name: string;
   school: string;
+};
+
+export type ShowClass = {
+  handleDelete: () => void;
+  chosenClass: Class | undefined;
 };

@@ -6,4 +6,61 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+    margin-bottom: 30px;
+}
+.info {
+    font-weight: bold;
+    font-size: 45px;
+}
+
+.show_class_main_section {
+    display: flex;
+}
+
+.tables {
+    width: 80%;
+}
+
+.student_enrollment {
+    width: 20%;
+}
+
+.students{
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+.students>* {
+    margin: 10px 0px;
+    width: 100%;
+}
+
+.student {
+    display: flex;
+    justify-content: space-between;
+}
+
+.total_seats {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.button_group>*{
+    margin-left: 15px;
+}
+
+.table_layout_table {
+    margin: 60px 100px;
+    display: flex;
+    border: solid;
+    border-radius: 5%;
+    padding: 40px 80px;
+    justify-content: space-between;
+    background-color: lightgray;
+    color: black;
+}
+
+.vl {
+    border-left: 5px solid white;
 }

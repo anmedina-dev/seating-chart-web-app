@@ -7,9 +7,9 @@ export default async function handle(
   res: NextApiResponse<any>
 ) {
   if (req.method === "GET") {
-    const classrooms = await prisma.subjects.findMany({});
+    const subjects = await prisma.subjects.findMany({});
     res.setHeader("Cache-Control", "s-maxage=86400");
-    return res.status(200).json(classrooms);
+    return res.status(200).json(subjects);
   } else if (req.method === "POST") {
     return await createSubject(req, res);
   }

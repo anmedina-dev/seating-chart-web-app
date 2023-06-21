@@ -1,10 +1,8 @@
 import { Class } from "@/interfaces";
 import axios from "axios";
-import useUserHook from "./user-hook";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-const useClassHook = () => {
-  const { data } = useUserHook();
+const useClassHook = (data: any) => {
   const [classes, setClasses] = useState<Class[]>();
 
   const addClasses = async (
@@ -20,8 +18,6 @@ const useClassHook = () => {
       function: "add",
     });
 
-    const responseData = await response.data;
-
     getClasses();
   };
 
@@ -32,8 +28,6 @@ const useClassHook = () => {
       function: "delete",
     });
 
-    const responseData = await response.data;
-
     getClasses();
   };
 
@@ -42,11 +36,20 @@ const useClassHook = () => {
       params: { teacher_id: data.teacher.id },
     });
     const responseData = await response.data;
-    console.log(responseData);
-    setClasses(responseData);
+
+    const sortedData = responseData.sort(
+      (a: { period: any }, b: { period: any }) => (a.period > b.period ? 1 : -1)
+    );
+
+    setClasses(sortedData);
   };
 
-  return { classes, getClasses, addClasses, deleteClasses };
+  return {
+    classes,
+    getClasses,
+    addClasses,
+    deleteClasses,
+  };
 };
 
 export default useClassHook;

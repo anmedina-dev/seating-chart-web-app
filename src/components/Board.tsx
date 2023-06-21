@@ -6,13 +6,13 @@ import ShowClass from "./ShowClass";
 import CreateClass from "./CreateClass";
 import useUserHook from "@/hooks/user-hook";
 import useClassHook from "@/hooks/class-hooks";
-import useBoardHook from "@/hooks/board-hooks";
+import { Class } from "@/interfaces";
 
 export default function Board() {
   const { data } = useUserHook();
-  const { classes, getClasses, deleteClasses } = useClassHook();
+  const { classes, getClasses, deleteClasses } = useClassHook(data);
   const [classSelected, setClassSelected] = useState<any>("add");
-  // const { classSelected, setClassSelected } = useBoardHook();
+  const [chosenClass, setChosenClass] = useState<Class>();
 
   useEffect(() => {
     if (!data) return;
@@ -21,11 +21,16 @@ export default function Board() {
 
   useEffect(() => {
     if (!data) return;
-    getClasses();
+    updateShowClass();
   }, [classSelected]);
 
+  const updateShowClass = () => {
+    if (classSelected === "add") return;
+    const findChosenClass = classes?.find((x) => x.period === classSelected);
+    setChosenClass(findChosenClass);
+  };
+
   const handleClick = (period: any) => {
-    console.log(period);
     setClassSelected(period);
   };
 
@@ -34,7 +39,8 @@ export default function Board() {
     setClassSelected("add");
   };
 
-  const handleAdd = (period: any) => {
+  const handleAdd = async (period: any) => {
+    await getClasses();
     setClassSelected(period);
   };
 
@@ -59,10 +65,7 @@ export default function Board() {
         {classSelected === "add" ? (
           <CreateClass handleAdd={handleAdd} />
         ) : (
-          <ShowClass
-            classSelected={classSelected}
-            handleDelete={handleDelete}
-          />
+          <ShowClass handleDelete={handleDelete} chosenClass={chosenClass} />
         )}
       </div>
     </div>

@@ -7,8 +7,7 @@ import useClassHook from "@/hooks/class-hooks";
 
 export default function AddClass({ handleAdd }: any) {
   const { data, isLoaded, user, isLoading } = useUserHook();
-  const { getClasses } = useClassHook();
-  const { addClasses } = useClassHook();
+  const { getClasses, addClasses } = useClassHook(data);
   const [period, setPeriod] = useState<any>("");
   const [periodError, setPeriodError] = useState<boolean>(false);
   const [classrooms, setClassrooms] = useState<ClassRoom[]>();
@@ -90,6 +89,12 @@ export default function AddClass({ handleAdd }: any) {
     }
 
     try {
+      if (subjectChoice === "Other") {
+        const subject = await axios.post("/api/subject", {
+          name: subjectText,
+        });
+      }
+
       await addClasses(period, subjectBody, classroomId.id);
       await getClasses();
       await handleAdd(period);

@@ -92,7 +92,7 @@ export default function CreateTeacher() {
     return areThereErrrors;
   };
 
-  if (!isLoaded || !user || isLoading) return <div>...Loading</div>;
+  if (isLoading) return <div>...Loading</div>;
   if (data) router.push("/Classroom");
   if (isLoaded && !isSignedIn) router.push("/");
   return (
