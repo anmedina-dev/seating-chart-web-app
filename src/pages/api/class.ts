@@ -14,7 +14,7 @@ export default async function handle(
         teacher_id: teacher_id,
       },
     });
-    res.setHeader("Cache-Control", "s-maxage=86400");
+
     return res.status(200).json(classes);
   } else if (req.method === "POST") {
     if (req.body.function === "add") return createClass(req, res);

@@ -16,7 +16,7 @@ export default async function handle(
         school_id: school_id,
       },
     });
-    res.setHeader("Cache-Control", "s-maxage=86400");
+
     return res.status(200).json(classrooms);
   } else if (req.method === "POST") {
     return await createClassroom(req, res);

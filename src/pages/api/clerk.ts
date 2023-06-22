@@ -24,7 +24,7 @@ export default async function handle(
         id: clerk_teacher["teacher_id"],
       },
     });
-    res.setHeader("Cache-Control", "s-maxage=86400");
+
     return res.status(200).json({ teacher });
   } else if (req.method === "POST") {
     return await createTeacher(req, res);
