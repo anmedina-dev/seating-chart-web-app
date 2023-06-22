@@ -14,8 +14,6 @@ const useTablesHook = () => {
     const responseData = await response.data;
 
     setTables(responseData);
-
-    responseData;
   };
 
   const addTable = async (classroom: { id: any }) => {
@@ -28,12 +26,11 @@ const useTablesHook = () => {
 
     const responseData = await response.data;
 
-    getTables(classroom);
+    await getTables(classroom);
   };
 
   const deleteTable = async (room_id: number, classroom: { id: any }) => {
     if (!classroom) return;
-    room_id;
     const response = await axios.post("/api/tables", {
       id: room_id,
       function: "delete",
@@ -41,7 +38,7 @@ const useTablesHook = () => {
 
     const responseData = await response.data;
 
-    getTables(classroom);
+    await getTables(classroom);
   };
 
   const addTableSeats = async (room_id: number, classroom: { id: any }) => {
@@ -54,7 +51,7 @@ const useTablesHook = () => {
 
     const responseData = await response.data;
 
-    getTables(classroom);
+    await getTables(classroom);
   };
 
   const deleteTableSeats = async (room_id: number, classroom: { id: any }) => {
@@ -63,7 +60,7 @@ const useTablesHook = () => {
 
     const tempTable = tables.find((item) => item.id === +room_id);
     if (tempTable && tempTable.seats === 1) {
-      deleteTable(tempTable.id, classroom);
+      await deleteTable(tempTable.id, classroom);
       return;
     }
     const response = await axios.post("/api/tables", {
@@ -74,7 +71,7 @@ const useTablesHook = () => {
 
     const responseData = await response.data;
 
-    getTables(classroom);
+    await getTables(classroom);
   };
 
   return {

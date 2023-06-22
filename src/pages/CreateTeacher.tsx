@@ -32,6 +32,7 @@ export default function CreateTeacher() {
         );
         tempSchools.push("Other");
         setSchools(tempSchools);
+        setSchoolDropdown(tempSchools[0]);
       })
       .catch(function (error) {});
   }, []);
@@ -53,22 +54,31 @@ export default function CreateTeacher() {
     const errors = handleErrors();
     if (errors) return;
 
+    try {
+      await axios.post("/api/clerk", {
+        firstName: firstName,
+        lastName: lastName,
+        school: isOther ? schoolType : schoolDropdown,
+        clerk_id: user.id,
+      });
+    } catch {
+      console.log(error);
+    }
+
+    await router.push("/Classroom");
+
+    /*
     await fetch("/api/clerk", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        firstName: firstName,
-        lastName: lastName,
-        school: isOther ? schoolType : schoolDropdown,
-        clerk_id: user.id,
-      }),
+      body: JSON.stringify({}),
     }).then((res) => {
-      res.json();
       router.push("/Classroom");
     });
+    */
   };
 
   const handleErrors = () => {
@@ -92,7 +102,7 @@ export default function CreateTeacher() {
     return areThereErrrors;
   };
 
-  if (isLoading) return <div>...Loading</div>;
+  if (isLoaded && isLoading) return <div>...Loading</div>;
   if (data) router.push("/Classroom");
   if (isLoaded && !isSignedIn) router.push("/");
   return (
