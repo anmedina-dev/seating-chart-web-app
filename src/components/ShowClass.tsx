@@ -149,7 +149,7 @@ export default function ShowClass({ handleDelete, chosenClass }: ShowClass) {
     <div className={styles.show_class}>
       <div className={styles.header}>
         <span className={styles.info}>
-          {subject} {chosenClass.period}
+          Period {chosenClass.period} : {subject}
         </span>
         <ButtonGroup variant="contained" className={styles.button_group}>
           <Button onClick={shuffle}>Randomize Students</Button>
