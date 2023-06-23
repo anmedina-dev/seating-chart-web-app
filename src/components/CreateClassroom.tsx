@@ -95,6 +95,7 @@ export default function CreateClassroom({ startingClassroom }: any) {
                 classroom={classroom}
                 table={table}
                 key={index}
+                num={index}
                 deleteTable={deleteTable}
                 deleteTableSeats={deleteTableSeats}
                 addTableSeats={addTableSeats}

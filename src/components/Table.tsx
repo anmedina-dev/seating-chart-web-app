@@ -10,6 +10,7 @@ export default function Table({
   deleteTableSeats,
   addTableSeats,
   classroom,
+  num,
 }: any) {
   return (
     <div className={styles.table}>
@@ -19,7 +20,7 @@ export default function Table({
         onClick={(event) => deleteTable(event.currentTarget.id)}
       />
       <div className={styles.table_info}>
-        <h3>Table: </h3>
+        <h3>Table {num + 1}: </h3>
         <div className={styles.seat_section}>
           <RemoveCircleIcon
             className={styles.icon}
@@ -28,7 +29,9 @@ export default function Table({
               deleteTableSeats(event.currentTarget.id, classroom)
             }
           />
-          <h3>{table.seats}</h3>
+          <h3 className={styles.seats_class}>
+            {table.seats} {table.seats === 1 ? "seat" : "seats"}
+          </h3>
           <AddCircleIcon
             className={styles.icon}
             id={table.id}
